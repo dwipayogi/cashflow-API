@@ -8,7 +8,7 @@ datasource db {
 }
 
 model users {
-  id           BigInt         @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   username     String
   email        String         @unique
   password     String
@@ -17,21 +17,19 @@ model users {
 }
 
 model categories {
-  id           BigInt         @id @default(autoincrement())
-  name         String         @db.VarChar
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar
   transactions transactions[]
 }
 
 model transactions {
-  id          BigInt      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String?
-  amount      BigInt
-  userId      BigInt
-  category    BigInt
-  date        DateTime    @default(now()) @db.Timestamptz(6)
-  user        users       @relation(fields: [userId], references: [id])
-  categories  categories  @relation(fields: [category], references: [id])
+  amount      Int
+  userId      Int
+  category    Int
+  date        DateTime   @default(now()) @db.Timestamptz(6)
+  categories  categories @relation(fields: [category], references: [id])
+  user        users      @relation(fields: [userId], references: [id])
 }
-
-

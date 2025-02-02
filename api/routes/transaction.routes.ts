@@ -5,6 +5,6 @@ import {
 } from "../controllers/transaction.controller";
 
 export default function transactionRouter(app: Router) {
-  app.post("/users/:userId/transactions", createTransaction);
-  app.get("/users/:userId/transactions", getTransaction);
+  app.post("/transactions/:userId", createTransaction);
+  app.get("/transactions/:userId", getTransaction);
 }

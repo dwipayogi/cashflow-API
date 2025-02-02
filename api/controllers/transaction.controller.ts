@@ -2,18 +2,18 @@ import type { Request, Response } from "express";
 import prisma from "../client";
 
 export const createTransaction = async (req: Request, res: Response) => {
-  const id = req.params.userId as unknown as bigint;
+  const id = req.params.userId as string;
   const { category, name, description, amount } = req.body as {
     category: number;
     type: string;
     name: string;
     description: string;
-    amount: bigint;
+    amount: number;
   };
 
   const transaction = await prisma.transactions.create({
     data: {
-      userId: id,
+      userId: Number(id),
       name,
       description,
       amount,
@@ -25,11 +25,11 @@ export const createTransaction = async (req: Request, res: Response) => {
 };
 
 export const getTransaction = async (req: Request, res: Response) => {
-  const id = req.params.userId as unknown as bigint;
+  const id = req.params.userId as string;
 
   const transaction = await prisma.transactions.findMany({
     where: {
-      userId: id,
+      userId: Number(id),
     },
   });
 

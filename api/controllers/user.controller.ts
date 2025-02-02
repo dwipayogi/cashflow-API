@@ -14,10 +14,10 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const id = req.params.userId as unknown as bigint;
+  const id = req.params.userId as string;
   const users = await prisma.users.findUnique({
     where: {
-      id,
+      id: Number(id),
     },
     select: {
       id: true,
@@ -35,12 +35,12 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const id = req.params.userId as unknown as bigint;
+  const id = req.params.userId as string;
   const { email, password } = req.body;
 
   const user = await prisma.users.update({
     where: {
-      id,
+      id: Number(id),
     },
     data: {
       email,
@@ -53,14 +53,14 @@ export const updateUser = async (req: Request, res: Response) => {
     return;
   }
 
-  res.json(user);
+  res.json({ message: `User ${user.username} updated` });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const id = req.params.userId as unknown as bigint;
+  const id = req.params.userId as string;
   const user = await prisma.users.delete({
     where: {
-      id,
+      id: Number(id),
     },
   });
 
@@ -69,5 +69,5 @@ export const deleteUser = async (req: Request, res: Response) => {
     return;
   }
 
-  res.json(user);
+  res.json({ message: `User ${user.username} deleted` });
 };

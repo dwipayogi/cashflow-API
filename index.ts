@@ -4,6 +4,7 @@ import cors from "cors";
 
 import userRouter from "./api/routes/user.routes";
 import transactionRouter from "./api/routes/transaction.routes";
+import categoryRouter from "./api/routes/category.routes";
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,7 @@ app.get("/", (req: Request, res: Response) => {
 
 userRouter(app);
 transactionRouter(app);
+categoryRouter(app);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(404).json({ message: "Route not found" });
