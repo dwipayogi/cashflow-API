@@ -11,7 +11,7 @@ export const authenticate = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    res.status(401).json({ message: "No token provided" });
+    res.status(401).send({ message: "No token provided" });
     return;
   }
 
@@ -21,7 +21,7 @@ export const authenticate = (
     jwt.verify(token, JWT_SECRET);
     next();
   } catch (error) {
-    res.status(403).json({ message: "Invalid token" });
+    res.status(403).send({ message: "Invalid token" });
     return;
   }
 };

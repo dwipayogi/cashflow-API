@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
-import prisma from "../client";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import prisma from "../client";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -15,7 +16,8 @@ export const userLogin = async (req: Request, res: Response) => {
     return;
   }
 
-  if (user.password !== password) {
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
     res.status(401).send({ message: "Incorrect password" });
     return;
   }
@@ -26,7 +28,7 @@ export const userLogin = async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
-  res.send({ message: "Login successful", token });
+  res.send(token);
 };
 
 export const userLogout = async (req: Request, res: Response) => {
