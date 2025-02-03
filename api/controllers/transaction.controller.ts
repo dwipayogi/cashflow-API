@@ -21,7 +21,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     },
   });
 
-  res.json(transaction);
+  res.send(transaction);
 };
 
 export const getTransaction = async (req: Request, res: Response) => {
@@ -34,9 +34,9 @@ export const getTransaction = async (req: Request, res: Response) => {
   });
 
   if (!transaction) {
-    res.status(404).json({ message: "Transaction not found" });
+    res.status(404).send({ message: "Transaction not found" });
     return;
   }
 
-  res.json(transaction);
+  res.send(transaction);
 };

@@ -10,7 +10,7 @@ export const createUser = async (req: Request, res: Response) => {
       password,
     },
   });
-  res.json(user);
+  res.send(user);
 };
 
 export const getUser = async (req: Request, res: Response) => {
@@ -27,11 +27,11 @@ export const getUser = async (req: Request, res: Response) => {
   });
 
   if (!users) {
-    res.status(404).json({ message: "User not found" });
+    res.status(404).send({ message: "User not found" });
     return;
   }
 
-  res.json(users);
+  res.send(users);
 };
 
 export const updateUser = async (req: Request, res: Response) => {
@@ -49,11 +49,11 @@ export const updateUser = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    res.status(404).json({ message: "User not found" });
+    res.status(404).send({ message: "User not found" });
     return;
   }
 
-  res.json({ message: `User ${user.username} updated` });
+  res.send({ message: `User ${user.username} updated` });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -65,9 +65,9 @@ export const deleteUser = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    res.status(404).json({ message: "User not found" });
+    res.status(404).send({ message: "User not found" });
     return;
   }
 
-  res.json({ message: `User ${user.username} deleted` });
+  res.send({ message: `User ${user.username} deleted` });
 };

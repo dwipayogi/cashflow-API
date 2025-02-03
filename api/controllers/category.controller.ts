@@ -11,7 +11,7 @@ export const createCategory = async (req: Request, res: Response) => {
   });
 
   if (category) {
-    res.status(400).json({ message: "Category already exists" });
+    res.status(400).send({ message: "Category already exists" });
     return;
   }
 
@@ -20,7 +20,7 @@ export const createCategory = async (req: Request, res: Response) => {
       name: capitalizeWords(name),
     },
   });
-  res.json(newCategory);
+  res.send(newCategory);
 };
 
 export const getCategory = async (req: Request, res: Response) => {
@@ -35,7 +35,7 @@ export const getCategory = async (req: Request, res: Response) => {
   });
 
   if (!transaction) {
-    res.status(404).json({ message: "Category not found" });
+    res.status(404).send({ message: "Category not found" });
     return;
   }
 
@@ -48,5 +48,5 @@ export const getCategory = async (req: Request, res: Response) => {
   });
   const category = categories.map((c) => c.name);
 
-  res.json(category);
+  res.send(category);
 };
