@@ -2,6 +2,10 @@
   "name": "cashflow-api",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun --watch run index.ts",
+    "build": "prisma generate && tsc"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/bun": "latest",
