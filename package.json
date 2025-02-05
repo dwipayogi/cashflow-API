@@ -1,8 +1,8 @@
 {
   "name": "cashflow-api",
   "version": "1.0.0",
-  "module": "index.ts",
-  "type": "module",
+  "main": "index.js",
+  "type": "commonjs",
   "keywords": [
     "express",
     "typescript",
