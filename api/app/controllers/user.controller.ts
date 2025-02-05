@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import prisma from "../client";
+import prisma from "../../client";
 
 export const createUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;

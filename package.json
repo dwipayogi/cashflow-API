@@ -1,7 +1,16 @@
 {
   "name": "cashflow-api",
+  "version": "1.0.0",
   "module": "index.ts",
   "type": "module",
+  "keywords": [
+    "express",
+    "typescript",
+    "prisma",
+    "bun"
+  ],
+  "author": "",
+  "license": "ISC",
   "scripts": {
     "dev": "bun --watch run index.ts",
     "build": "prisma generate && tsc"
@@ -13,10 +22,8 @@
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.8",
-    "prisma": "^6.3.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "prisma": "^6.3.0",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@prisma/client": "6.3.0",

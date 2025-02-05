@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import prisma from "../client";
+import prisma from "../../client";
 
 export const createTransaction = async (req: Request, res: Response) => {
   const id = req.params.userId as string;

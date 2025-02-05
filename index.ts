@@ -2,10 +2,10 @@ import express from "express";
 import type { Request, Response } from "express";
 import cors from "cors";
 
-import authRouter from "./api/routes/auth.routes";
-import userRouter from "./api/routes/user.routes";
-import transactionRouter from "./api/routes/transaction.routes";
-import categoryRouter from "./api/routes/category.routes";
+import authRouter from "./api/app/routes/auth.routes";
+import userRouter from "./api/app/routes/user.routes";
+import transactionRouter from "./api/app/routes/transaction.routes";
+import categoryRouter from "./api/app/routes/category.routes";
 
 const app = express();
 app.use(express.json());

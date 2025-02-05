@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import prisma from "../client";
+import prisma from "../../client";
 import capitalizeWords from "../lib/capitalizeWord";
 
 export const createCategory = async (req: Request, res: Response) => {
