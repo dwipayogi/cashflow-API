@@ -26,7 +26,7 @@ export const userLogin = async (req: Request, res: Response) => {
     expiresIn: "7d",
   });
 
-  res.send(token);
+  res.send({user, token});
 };
 
 export const userLogout = async (req: Request, res: Response) => {

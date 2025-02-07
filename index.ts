@@ -13,10 +13,15 @@ app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Headers",
+    ],
   })
 );
-const port = 3000;
+const PORT = 3000;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Cashflow API");
@@ -31,8 +36,8 @@ app.get("*", (req: Request, res: Response) => {
   res.status(404).send({ message: "Route not found" });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 export default app;
