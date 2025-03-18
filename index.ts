@@ -13,15 +13,13 @@ app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-      "Content-Type",
-    ],
+    allowedHeaders: ["Content-Type"],
   })
 );
 const PORT = 3000;
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Cashflow API");
+  res.status(200).send({ success: true, message: "Cashflow API is running" });
 });
 
 userRouter(app);
@@ -30,7 +28,7 @@ categoryRouter(app);
 budgetingRouter(app);
 
 app.get("*", (req: Request, res: Response) => {
-  res.status(404).send({ message: "Route not found" });
+  res.status(404).send({ success: false, message: "Route not found" });
 });
 
 app.listen(PORT, () => {

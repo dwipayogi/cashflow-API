@@ -37,9 +37,15 @@ export const getTransaction = async (req: Request, res: Response) => {
   });
 
   if (!transaction) {
-    res.status(404).send({ message: "Transaction not found" });
+    res.status(404).send({ success: false, message: "Transaction not found" });
     return;
   }
 
-  res.send(transaction);
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Transaction retrieved successfully",
+      data: transaction,
+    });
 };

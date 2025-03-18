@@ -22,8 +22,14 @@ export const createBudget = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(budget);
-}
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Budget created successfully",
+      data: budget,
+    });
+};
 
 export const getBudgets = async (req: Request, res: Response) => {
   const id = req.params.userId as string;
@@ -37,15 +43,21 @@ export const getBudgets = async (req: Request, res: Response) => {
       amount: true,
       target: true,
       date: true,
-    }
+    },
   });
 
   if (!budget) {
-    res.status(404).send({ message: "Budget not found" });
+    res.status(404).send({ success: false, message: "Budget not found" });
     return;
   }
 
-  res.send(budget);
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Budgets retrieved successfully",
+      data: budget,
+    });
 };
 
 export const getBudget = async (req: Request, res: Response) => {
@@ -63,15 +75,21 @@ export const getBudget = async (req: Request, res: Response) => {
       amount: true,
       target: true,
       date: true,
-    }
+    },
   });
 
   if (!budget) {
-    res.status(404).send({ message: "Budget not found" });
+    res.status(404).send({ success: false, message: "Budget not found" });
     return;
   }
 
-  res.send(budget);
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Budget retrieved successfully",
+      data: budget,
+    });
 };
 
 export const deleteBudget = async (req: Request, res: Response) => {
@@ -85,5 +103,11 @@ export const deleteBudget = async (req: Request, res: Response) => {
     },
   });
 
-  res.send({ message: "Budget deleted successfully", budget });
-}
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Budget deleted successfully",
+      data: budget,
+    });
+};

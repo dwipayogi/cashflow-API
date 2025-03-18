@@ -11,7 +11,9 @@ export const createCategory = async (req: Request, res: Response) => {
   });
 
   if (category) {
-    res.status(400).send({ message: "Category already exists" });
+    res
+      .status(400)
+      .send({ success: false, message: "Category already exists" });
     return;
   }
 
@@ -20,7 +22,13 @@ export const createCategory = async (req: Request, res: Response) => {
       name: capitalizeWords(name),
     },
   });
-  res.send(newCategory);
+  res
+    .status(201)
+    .send({
+      success: true,
+      message: "Category created successfully",
+      data: newCategory,
+    });
 };
 
 export const getCategory = async (req: Request, res: Response) => {
@@ -35,7 +43,7 @@ export const getCategory = async (req: Request, res: Response) => {
   });
 
   if (!transaction) {
-    res.status(404).send({ message: "Category not found" });
+    res.status(404).send({ success: false, message: "Category not found" });
     return;
   }
 
@@ -48,5 +56,11 @@ export const getCategory = async (req: Request, res: Response) => {
   });
   const category = categories.map((c) => c.name);
 
-  res.send(category);
+  res
+    .status(200)
+    .send({
+      success: true,
+      message: "Category retrieved successfully",
+      data: category,
+    });
 };
