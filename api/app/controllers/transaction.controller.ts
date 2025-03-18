@@ -3,12 +3,13 @@ import prisma from "../../client";
 
 export const createTransaction = async (req: Request, res: Response) => {
   const id = req.params.userId as string;
-  const { category, name, description, amount } = req.body as {
+  const { category, name, description, amount, image } = req.body as {
     category: number;
     type: string;
     name: string;
     description: string;
     amount: number;
+    image?: string;
   };
 
   const transaction = await prisma.transactions.create({
@@ -18,6 +19,8 @@ export const createTransaction = async (req: Request, res: Response) => {
       description,
       amount,
       category,
+      type: "income",
+      image,
     },
   });
 

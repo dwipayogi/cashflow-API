@@ -2,7 +2,6 @@ import express from "express";
 import type { Request, Response } from "express";
 import cors from "cors";
 
-import authRouter from "./api/app/routes/auth.routes";
 import userRouter from "./api/app/routes/user.routes";
 import transactionRouter from "./api/app/routes/transaction.routes";
 import categoryRouter from "./api/app/routes/category.routes";
@@ -15,9 +14,6 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [
       "Content-Type",
-      "Authorization",
-      "Access-Control-Allow-Origin",
-      "Access-Control-Allow-Headers",
     ],
   })
 );
@@ -27,7 +23,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Cashflow API");
 });
 
-authRouter(app);
 userRouter(app);
 transactionRouter(app);
 categoryRouter(app);
