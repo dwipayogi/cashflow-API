@@ -5,6 +5,7 @@ import cors from "cors";
 import userRouter from "./api/app/routes/user.routes";
 import transactionRouter from "./api/app/routes/transaction.routes";
 import categoryRouter from "./api/app/routes/category.routes";
+import budgetingRouter from "./api/app/routes/budgeting.routes";
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => {
 userRouter(app);
 transactionRouter(app);
 categoryRouter(app);
+budgetingRouter(app);
 
 app.get("*", (req: Request, res: Response) => {
   res.status(404).send({ message: "Route not found" });
