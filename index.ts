@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/transactions", transactionRoutes);
-app.use("/api/budgets", budgetRoutes);
+app.use("/api/budgets", budgetRoutes); // Add this line
 
 // Root route
 app.get("/", (req, res) => {

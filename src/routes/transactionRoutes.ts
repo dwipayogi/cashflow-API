@@ -1,27 +1,29 @@
 import express from "express";
 import {
   createTransaction,
-  getAllTransactions,
-  getTransactionById,
+  getTransactions,
+  getTransaction,
   updateTransaction,
   deleteTransaction,
+  getTransactionsByCategory,
+  getTransactionsByType,
+  getTransactionsByCategoryName,
 } from "../controllers/transactionController.ts";
+import { protect } from "../middleware/auth.ts";
 
 const router = express.Router();
 
-// GET /api/transactions - Get all transactions
-router.get("/", getAllTransactions);
+// All routes are protected and require authentication
+router.use(protect);
 
-// GET /api/transactions/:id - Get transaction by ID
-router.get("/:id", getTransactionById);
-
-// POST /api/transactions - Create new transaction
+// Transaction routes
 router.post("/", createTransaction);
-
-// PUT /api/transactions/:id - Update transaction
+router.get("/", getTransactions);
+router.get("/category/:categoryId", getTransactionsByCategory);
+router.get("/category/name/:categoryName", getTransactionsByCategoryName);
+router.get("/type/:type", getTransactionsByType);
+router.get("/:id", getTransaction);
 router.put("/:id", updateTransaction);
-
-// DELETE /api/transactions/:id - Delete transaction
 router.delete("/:id", deleteTransaction);
 
 export default router;

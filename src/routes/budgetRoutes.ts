@@ -1,27 +1,25 @@
 import express from "express";
 import {
   createBudget,
-  getAllBudgets,
-  getBudgetById,
+  getBudgets,
+  getBudget,
   updateBudget,
   deleteBudget,
+  getBudgetsByCategory,
 } from "../controllers/budgetController.ts";
+import { protect } from "../middleware/auth.ts";
 
 const router = express.Router();
 
-// GET /api/budgets - Get all budgets
-router.get("/", getAllBudgets);
+// All routes are protected - require authentication
+router.use(protect);
 
-// GET /api/budgets/:id - Get budget by ID
-router.get("/:id", getBudgetById);
-
-// POST /api/budgets - Create new budget
+// Budget routes
 router.post("/", createBudget);
-
-// PUT /api/budgets/:id - Update budget
+router.get("/", getBudgets);
+router.get("/category/:categoryId", getBudgetsByCategory);
+router.get("/:id", getBudget);
 router.put("/:id", updateBudget);
-
-// DELETE /api/budgets/:id - Delete budget
 router.delete("/:id", deleteBudget);
 
 export default router;

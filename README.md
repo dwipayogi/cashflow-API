@@ -1,765 +1,912 @@
 # Cashflow API Documentation
 
-## Overview
+A RESTful API for managing personal finances, including transactions, budgets, and categories.
 
-Cashflow API is a RESTful API for managing personal finance including users, transactions, budgets, and categories. Built with Express.js, TypeScript, and Prisma ORM with PostgreSQL database.
+## Table of Contents
 
-## Base URL
-
-```
-http://localhost:3000/api
-```
+- [Authentication](#authentication)
+  - [Register](#register)
+  - [Login](#login)
+  - [Profile](#profile)
+- [Categories](#categories)
+  - [Create Category](#create-category)
+  - [Get All Categories](#get-all-categories)
+  - [Get Category](#get-category)
+  - [Update Category](#update-category)
+  - [Delete Category](#delete-category)
+- [Transactions](#transactions)
+  - [Create Transaction](#create-transaction)
+  - [Get All Transactions](#get-all-transactions)
+  - [Get Transaction](#get-transaction)
+  - [Get Transactions by Category ID](#get-transactions-by-category-id)
+  - [Get Transactions by Category Name](#get-transactions-by-category-name)
+  - [Get Transactions by Type](#get-transactions-by-type)
+  - [Update Transaction](#update-transaction)
+  - [Delete Transaction](#delete-transaction)
+- [Budgets](#budgets)
+  - [Create Budget](#create-budget)
+  - [Get All Budgets](#get-all-budgets)
+  - [Get Budget](#get-budget)
+  - [Get Budgets by Category](#get-budgets-by-category)
+  - [Update Budget](#update-budget)
+  - [Delete Budget](#delete-budget)
 
 ## Authentication
 
-Most endpoints require JWT authentication. Include the token in the Authorization header:
+### Register
 
-```
-Authorization: Bearer <your-jwt-token>
-```
+Register a new user account.
 
----
-
-## Authentication Endpoints
-
-### Register User
-
-**POST** `/auth/register`
-
-Create a new user account.
-
-**Request Body:**
-
-```json
-{
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "securepassword123"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User registered successfully",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "uuid",
+- **URL**: `/api/auth/register`
+- **Method**: `POST`
+- **Authentication**: None
+- **Request Body**:
+  ```json
+  {
+    "username": "johndoe",
     "email": "john@example.com",
-    "username": "john_doe"
+    "password": "yourpassword"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 201 Created
+  - **Content**:
+    ```json
+    {
+      "message": "User registered successfully",
+      "token": "jwt_token_here",
+      "user": {
+        "id": "user_id",
+        "email": "john@example.com",
+        "username": "johndoe"
+      }
+    }
+    ```
 
 ### Login
 
-**POST** `/auth/login`
+Authenticate a user and receive a token.
 
-Authenticate user and get access token.
-
-**Request Body:**
-
-```json
-{
-  "email": "john@example.com",
-  "password": "securepassword123"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "uuid",
+- **URL**: `/api/auth/login`
+- **Method**: `POST`
+- **Authentication**: None
+- **Request Body**:
+  ```json
+  {
     "email": "john@example.com",
-    "username": "john_doe"
+    "password": "yourpassword"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Login successful",
+      "token": "jwt_token_here",
+      "user": {
+        "id": "user_id",
+        "email": "john@example.com",
+        "username": "johndoe"
+      }
+    }
+    ```
 
-### Get Profile
+### Profile
 
-**GET** `/auth/profile`
+Get the authenticated user's profile.
 
-Get current user profile (protected route).
+- **URL**: `/api/auth/profile`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Profile accessed successfully",
+      "user": {
+        "id": "user_id",
+        "username": "johndoe",
+        "email": "john@example.com",
+        "createdAt": "2023-06-15T10:30:00.000Z",
+        "updatedAt": "2023-06-15T10:30:00.000Z"
+      }
+    }
+    ```
 
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "message": "Profile accessed successfully",
-  "user": {
-    "id": "uuid",
-    "email": "john@example.com",
-    "username": "john_doe"
-  }
-}
-```
-
----
-
-## Category Endpoints
-
-All category endpoints require authentication.
+## Categories
 
 ### Create Category
 
-**POST** `/categories`
+Create a new category.
 
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body:**
-
-```json
-{
-  "name": "Food & Dining",
-  "description": "Expenses for food and restaurant visits"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Category created successfully",
-  "category": {
-    "id": "uuid",
-    "name": "Food & Dining",
-    "description": "Expenses for food and restaurant visits",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z"
+- **URL**: `/api/categories`
+- **Method**: `POST`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "name": "Groceries",
+    "description": "Food and household items"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 201 Created
+  - **Content**:
+    ```json
+    {
+      "message": "Category created successfully",
+      "data": {
+        "id": "category_id",
+        "userId": "user_id",
+        "name": "Groceries",
+        "description": "Food and household items",
+        "createdAt": "2023-06-15T11:00:00.000Z",
+        "updatedAt": "2023-06-15T11:00:00.000Z"
+      }
+    }
+    ```
 
 ### Get All Categories
 
-**GET** `/categories`
+Get all categories for the authenticated user.
 
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "message": "Categories retrieved successfully",
-  "categories": [
+- **URL**: `/api/categories`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
     {
-      "id": "uuid",
-      "name": "Food & Dining",
-      "description": "Expenses for food and restaurant visits",
-      "createdAt": "2023-12-01T10:00:00.000Z",
-      "updatedAt": "2023-12-01T10:00:00.000Z",
-      "_count": {
-        "transactions": 5,
-        "budgets": 2
+      "count": 2,
+      "data": [
+        {
+          "id": "category_id_1",
+          "userId": "user_id",
+          "name": "Groceries",
+          "description": "Food and household items",
+          "createdAt": "2023-06-15T11:00:00.000Z",
+          "updatedAt": "2023-06-15T11:00:00.000Z"
+        },
+        {
+          "id": "category_id_2",
+          "userId": "user_id",
+          "name": "Entertainment",
+          "description": "Movies, games, etc.",
+          "createdAt": "2023-06-15T11:30:00.000Z",
+          "updatedAt": "2023-06-15T11:30:00.000Z"
+        }
+      ]
+    }
+    ```
+
+### Get Category
+
+Get a specific category by ID.
+
+- **URL**: `/api/categories/:id`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "data": {
+        "id": "category_id",
+        "userId": "user_id",
+        "name": "Groceries",
+        "description": "Food and household items",
+        "createdAt": "2023-06-15T11:00:00.000Z",
+        "updatedAt": "2023-06-15T11:00:00.000Z"
       }
     }
-  ]
-}
-```
-
-### Get Category by ID
-
-**GET** `/categories/{id}`
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "message": "Category retrieved successfully",
-  "category": {
-    "id": "uuid",
-    "name": "Food & Dining",
-    "description": "Expenses for food and restaurant visits",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z",
-    "transactions": [...],
-    "budgets": [...],
-    "_count": {
-      "transactions": 5,
-      "budgets": 2
-    }
-  }
-}
-```
+    ```
 
 ### Update Category
 
-**PUT** `/categories/{id}`
+Update an existing category.
 
-**Headers:**
-
-```
-Authorization: Bearer <token>
-```
-
-**Request Body:**
-
-```json
-{
-  "name": "Food & Beverages",
-  "description": "Updated description for food category"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Category updated successfully",
-  "category": {
-    "id": "uuid",
-    "name": "Food & Beverages",
-    "description": "Updated description for food category",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T11:00:00.000Z"
+- **URL**: `/api/categories/:id`
+- **Method**: `PUT`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "name": "Food",
+    "description": "Groceries and dining out"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Category updated successfully",
+      "data": {
+        "id": "category_id",
+        "userId": "user_id",
+        "name": "Food",
+        "description": "Groceries and dining out",
+        "createdAt": "2023-06-15T11:00:00.000Z",
+        "updatedAt": "2023-06-15T12:00:00.000Z"
+      }
+    }
+    ```
 
 ### Delete Category
 
-**DELETE** `/categories/{id}`
+Delete a category.
 
-**Headers:**
+- **URL**: `/api/categories/:id`
+- **Method**: `DELETE`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Category deleted successfully"
+    }
+    ```
 
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-
-```json
-{
-  "message": "Category deleted successfully"
-}
-```
-
-**Note:** Categories with existing transactions or budgets cannot be deleted.
-
----
-
-## Transaction Endpoints
+## Transactions
 
 ### Create Transaction
 
-**POST** `/transactions`
+Create a new transaction. If the category doesn't exist, it will be created automatically.
 
-Creates a new transaction. If the category doesn't exist, it will be created automatically.
-
-**Request Body:**
-
-```json
-{
-  "userId": "user-uuid",
-  "amount": 5000,
-  "description": "Lunch at restaurant",
-  "type": "WITHDRAWAL",
-  "category": "Food & Dining"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Transaction created successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 5000,
-    "description": "Lunch at restaurant",
+- **URL**: `/api/transactions`
+- **Method**: `POST`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "amount": 50,
+    "description": "Weekly grocery shopping",
     "type": "WITHDRAWAL",
-    "category": "category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z",
-    "user": {
-      "id": "user-uuid",
-      "username": "john_doe",
-      "email": "john@example.com"
-    },
-    "categoryData": {
-      "id": "category-uuid",
-      "name": "Food & Dining",
-      "description": "Auto-generated category: Food & Dining"
-    }
+    "category": "Groceries"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 201 Created
+  - **Content**:
+    ```json
+    {
+      "message": "Transaction created successfully",
+      "data": {
+        "id": "transaction_id",
+        "userId": "user_id",
+        "amount": 50,
+        "description": "Weekly grocery shopping",
+        "type": "WITHDRAWAL",
+        "category": "category_id",
+        "createdAt": "2023-06-15T14:00:00.000Z",
+        "updatedAt": "2023-06-15T14:00:00.000Z",
+        "categoryData": {
+          "id": "category_id",
+          "name": "Groceries",
+          "description": "Auto-created for transaction: Weekly grocery shopping",
+          "userId": "user_id",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z"
+        }
+      }
+    }
+    ```
 
 ### Get All Transactions
 
-**GET** `/transactions`
+Get all transactions for the authenticated user.
 
-**Query Parameters:**
-
-- `userId` (optional): Filter transactions by user ID
-
-**Examples:**
-
-- `/transactions` - Get all transactions
-- `/transactions?userId=user-uuid` - Get transactions for specific user
-
-**Response:**
-
-```json
-{
-  "message": "Transactions retrieved successfully",
-  "data": [
+- **URL**: `/api/transactions`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
     {
-      "id": "uuid",
-      "userId": "user-uuid",
-      "amount": 5000,
-      "description": "Lunch at restaurant",
-      "type": "WITHDRAWAL",
-      "category": "category-uuid",
-      "createdAt": "2023-12-01T10:00:00.000Z",
-      "updatedAt": "2023-12-01T10:00:00.000Z",
-      "user": {
-        "id": "user-uuid",
-        "username": "john_doe",
-        "email": "john@example.com"
-      },
-      "categoryData": {
-        "id": "category-uuid",
-        "name": "Food & Dining",
-        "description": "Auto-generated category: Food & Dining"
+      "count": 2,
+      "data": [
+        {
+          "id": "transaction_id_1",
+          "userId": "user_id",
+          "amount": 50,
+          "description": "Weekly grocery shopping",
+          "type": "WITHDRAWAL",
+          "category": "category_id_1",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z",
+          "categoryData": {
+            "id": "category_id_1",
+            "name": "Groceries",
+            "description": "Food and household items",
+            "userId": "user_id",
+            "createdAt": "2023-06-15T11:00:00.000Z",
+            "updatedAt": "2023-06-15T11:00:00.000Z"
+          }
+        },
+        {
+          "id": "transaction_id_2",
+          "userId": "user_id",
+          "amount": 1200,
+          "description": "Salary deposit",
+          "type": "DEPOSIT",
+          "category": "category_id_2",
+          "createdAt": "2023-06-14T10:00:00.000Z",
+          "updatedAt": "2023-06-14T10:00:00.000Z",
+          "categoryData": {
+            "id": "category_id_2",
+            "name": "Income",
+            "description": "Salary and other income",
+            "userId": "user_id",
+            "createdAt": "2023-06-14T10:00:00.000Z",
+            "updatedAt": "2023-06-14T10:00:00.000Z"
+          }
+        }
+      ]
+    }
+    ```
+
+### Get Transaction
+
+Get a specific transaction by ID.
+
+- **URL**: `/api/transactions/:id`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "data": {
+        "id": "transaction_id",
+        "userId": "user_id",
+        "amount": 50,
+        "description": "Weekly grocery shopping",
+        "type": "WITHDRAWAL",
+        "category": "category_id",
+        "createdAt": "2023-06-15T14:00:00.000Z",
+        "updatedAt": "2023-06-15T14:00:00.000Z",
+        "categoryData": {
+          "id": "category_id",
+          "name": "Groceries",
+          "description": "Food and household items",
+          "userId": "user_id",
+          "createdAt": "2023-06-15T11:00:00.000Z",
+          "updatedAt": "2023-06-15T11:00:00.000Z"
+        }
       }
     }
-  ]
-}
-```
+    ```
 
-### Get Transaction by ID
+### Get Transactions by Category ID
 
-**GET** `/transactions/{id}`
+Get transactions filtered by category ID.
 
-**Response:**
-
-```json
-{
-  "message": "Transaction retrieved successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 5000,
-    "description": "Lunch at restaurant",
-    "type": "WITHDRAWAL",
-    "category": "category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z",
-    "user": {
-      "id": "user-uuid",
-      "username": "john_doe",
-      "email": "john@example.com"
-    },
-    "categoryData": {
-      "id": "category-uuid",
-      "name": "Food & Dining",
-      "description": "Auto-generated category: Food & Dining"
+- **URL**: `/api/transactions/category/:categoryId`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "count": 1,
+      "categoryName": "Groceries",
+      "data": [
+        {
+          "id": "transaction_id",
+          "userId": "user_id",
+          "amount": 50,
+          "description": "Weekly grocery shopping",
+          "type": "WITHDRAWAL",
+          "category": "category_id",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z",
+          "categoryData": {
+            "id": "category_id",
+            "name": "Groceries",
+            "description": "Food and household items",
+            "userId": "user_id",
+            "createdAt": "2023-06-15T11:00:00.000Z",
+            "updatedAt": "2023-06-15T11:00:00.000Z"
+          }
+        }
+      ]
     }
-  }
-}
-```
+    ```
+
+### Get Transactions by Category Name
+
+Get transactions filtered by category name (case insensitive).
+
+- **URL**: `/api/transactions/category/name/:categoryName`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "count": 1,
+      "categoryName": "Groceries",
+      "categoryId": "category_id",
+      "data": [
+        {
+          "id": "transaction_id",
+          "userId": "user_id",
+          "amount": 50,
+          "description": "Weekly grocery shopping",
+          "type": "WITHDRAWAL",
+          "category": "category_id",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z",
+          "categoryData": {
+            "id": "category_id",
+            "name": "Groceries",
+            "description": "Food and household items",
+            "userId": "user_id",
+            "createdAt": "2023-06-15T11:00:00.000Z",
+            "updatedAt": "2023-06-15T11:00:00.000Z"
+          }
+        }
+      ]
+    }
+    ```
+
+### Get Transactions by Type
+
+Get transactions filtered by type (DEPOSIT or WITHDRAWAL).
+
+- **URL**: `/api/transactions/type/:type`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Parameters**:
+  - `type`: Either "DEPOSIT" or "WITHDRAWAL"
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "count": 1,
+      "transactionType": "DEPOSIT",
+      "data": [
+        {
+          "id": "transaction_id",
+          "userId": "user_id",
+          "amount": 1200,
+          "description": "Salary deposit",
+          "type": "DEPOSIT",
+          "category": "category_id",
+          "createdAt": "2023-06-14T10:00:00.000Z",
+          "updatedAt": "2023-06-14T10:00:00.000Z",
+          "categoryData": {
+            "id": "category_id",
+            "name": "Income",
+            "description": "Salary and other income",
+            "userId": "user_id",
+            "createdAt": "2023-06-14T10:00:00.000Z",
+            "updatedAt": "2023-06-14T10:00:00.000Z"
+          }
+        }
+      ]
+    }
+    ```
 
 ### Update Transaction
 
-**PUT** `/transactions/{id}`
+Update an existing transaction. If a new category is specified and doesn't exist, it will be created automatically.
 
-**Request Body:**
-
-```json
-{
-  "amount": 7500,
-  "description": "Dinner at restaurant",
-  "type": "WITHDRAWAL",
-  "category": "Dining"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Transaction updated successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 7500,
-    "description": "Dinner at restaurant",
-    "type": "WITHDRAWAL",
-    "category": "new-category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T11:00:00.000Z",
-    "user": {...},
-    "categoryData": {...}
+- **URL**: `/api/transactions/:id`
+- **Method**: `PUT`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "amount": 45,
+    "description": "Updated grocery description",
+    "category": "Food"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Transaction updated successfully",
+      "data": {
+        "id": "transaction_id",
+        "userId": "user_id",
+        "amount": 45,
+        "description": "Updated grocery description",
+        "type": "WITHDRAWAL",
+        "category": "new_category_id",
+        "createdAt": "2023-06-15T14:00:00.000Z",
+        "updatedAt": "2023-06-15T15:00:00.000Z",
+        "categoryData": {
+          "id": "new_category_id",
+          "name": "Food",
+          "description": "Auto-created for transaction update: Updated grocery description",
+          "userId": "user_id",
+          "createdAt": "2023-06-15T15:00:00.000Z",
+          "updatedAt": "2023-06-15T15:00:00.000Z"
+        }
+      }
+    }
+    ```
 
 ### Delete Transaction
 
-**DELETE** `/transactions/{id}`
+Delete a transaction.
 
-**Response:**
+- **URL**: `/api/transactions/:id`
+- **Method**: `DELETE`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Transaction deleted successfully"
+    }
+    ```
 
-```json
-{
-  "message": "Transaction deleted successfully"
-}
-```
-
----
-
-## Budget Endpoints
+## Budgets
 
 ### Create Budget
 
-**POST** `/budgets`
+Create a new budget for expense tracking or saving goals.
 
-Creates a new budget. If the category doesn't exist, it will be created automatically.
-
-**Request Body:**
-
-```json
-{
-  "userId": "user-uuid",
-  "amount": 100000,
-  "target": 200000,
-  "description": "Monthly food budget",
-  "type": "EXPENSE",
-  "endDate": "2023-12-31",
-  "category": "Food & Dining"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Budget created successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 100000,
-    "target": 200000,
+- **URL**: `/api/budgets`
+- **Method**: `POST`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "amount": 0,
+    "target": 120000,
     "description": "Monthly food budget",
     "type": "EXPENSE",
-    "endDate": "2023-12-31T00:00:00.000Z",
-    "category": "category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z",
-    "user": {
-      "id": "user-uuid",
-      "username": "john_doe",
-      "email": "john@example.com"
-    },
-    "categoryData": {
-      "id": "category-uuid",
-      "name": "Food & Dining",
-      "description": "Auto-generated category: Food & Dining"
-    }
+    "category": "makan",
+    "endDate": "2023-12-31"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 201 Created
+  - **Content**:
+    ```json
+    {
+      "message": "Budget created successfully",
+      "data": {
+        "id": "budget_id",
+        "userId": "user_id",
+        "amount": 0,
+        "target": 120000,
+        "description": "Monthly food budget",
+        "type": "EXPENSE",
+        "category": "category_id",
+        "endDate": "2023-12-31T00:00:00.000Z",
+        "createdAt": "2023-06-15T14:00:00.000Z",
+        "updatedAt": "2023-06-15T14:00:00.000Z",
+        "categoryData": {
+          "id": "category_id",
+          "name": "makan",
+          "description": "Auto-created for budget: Monthly food budget",
+          "userId": "user_id",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z"
+        }
+      }
+    }
+    ```
 
 ### Get All Budgets
 
-**GET** `/budgets`
+Get all budgets for the authenticated user.
 
-**Query Parameters:**
-
-- `userId` (optional): Filter budgets by user ID
-
-**Examples:**
-
-- `/budgets` - Get all budgets
-- `/budgets?userId=user-uuid` - Get budgets for specific user
-
-**Response:**
-
-```json
-{
-  "message": "Budgets retrieved successfully",
-  "data": [
+- **URL**: `/api/budgets`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
     {
-      "id": "uuid",
-      "userId": "user-uuid",
-      "amount": 100000,
-      "target": 200000,
+      "count": 2,
+      "data": [
+        {
+          "id": "budget_id_1",
+          "userId": "user_id",
+          "amount": 0,
+          "target": 120000,
+          "description": "Monthly food budget",
+          "type": "EXPENSE",
+          "category": "category_id_1",
+          "endDate": "2023-12-31T00:00:00.000Z",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z",
+          "categoryData": {
+            "id": "category_id_1",
+            "name": "makan",
+            "description": "Food expenses",
+            "userId": "user_id",
+            "createdAt": "2023-06-15T11:00:00.000Z",
+            "updatedAt": "2023-06-15T11:00:00.000Z"
+          }
+        },
+        {
+          "id": "budget_id_2",
+          "userId": "user_id",
+          "amount": 500000,
+          "target": 5000000,
+          "description": "Vacation savings",
+          "type": "SAVINGS",
+          "category": "category_id_2",
+          "endDate": null,
+          "createdAt": "2023-06-14T10:00:00.000Z",
+          "updatedAt": "2023-06-14T10:00:00.000Z",
+          "categoryData": {
+            "id": "category_id_2",
+            "name": "travel",
+            "description": "Travel expenses and savings",
+            "userId": "user_id",
+            "createdAt": "2023-06-14T10:00:00.000Z",
+            "updatedAt": "2023-06-14T10:00:00.000Z"
+          }
+        }
+      ]
+    }
+    ```
+
+### Get Budget
+
+Get a specific budget by ID.
+
+- **URL**: `/api/budgets/:id`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "id": "budget_id",
+      "userId": "user_id",
+      "amount": 45000,
+      "target": 120000,
       "description": "Monthly food budget",
       "type": "EXPENSE",
+      "category": "category_id",
       "endDate": "2023-12-31T00:00:00.000Z",
-      "category": "category-uuid",
-      "createdAt": "2023-12-01T10:00:00.000Z",
-      "updatedAt": "2023-12-01T10:00:00.000Z",
-      "user": {...},
-      "categoryData": {...}
+      "createdAt": "2023-06-15T14:00:00.000Z",
+      "updatedAt": "2023-06-15T14:00:00.000Z",
+      "categoryData": {
+        "id": "category_id",
+        "name": "makan",
+        "description": "Food expenses",
+        "userId": "user_id",
+        "createdAt": "2023-06-15T11:00:00.000Z",
+        "updatedAt": "2023-06-15T11:00:00.000Z"
+      }
     }
-  ]
-}
-```
+    ```
 
-### Get Budget by ID
+### Get Budgets by Category
 
-**GET** `/budgets/{id}`
+Get all budgets for a specific category.
 
-**Response:**
-
-```json
-{
-  "message": "Budget retrieved successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 100000,
-    "target": 200000,
-    "description": "Monthly food budget",
-    "type": "EXPENSE",
-    "endDate": "2023-12-31T00:00:00.000Z",
-    "category": "category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T10:00:00.000Z",
-    "user": {...},
-    "categoryData": {...}
-  }
-}
-```
+- **URL**: `/api/budgets/category/:categoryId`
+- **Method**: `GET`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "count": 1,
+      "categoryName": "makan",
+      "data": [
+        {
+          "id": "budget_id",
+          "userId": "user_id",
+          "amount": 45000,
+          "target": 120000,
+          "description": "Monthly food budget",
+          "type": "EXPENSE",
+          "category": "category_id",
+          "endDate": "2023-12-31T00:00:00.000Z",
+          "createdAt": "2023-06-15T14:00:00.000Z",
+          "updatedAt": "2023-06-15T14:00:00.000Z",
+          "categoryData": {
+            "id": "category_id",
+            "name": "makan",
+            "description": "Food expenses",
+            "userId": "user_id",
+            "createdAt": "2023-06-15T11:00:00.000Z",
+            "updatedAt": "2023-06-15T11:00:00.000Z"
+          }
+        }
+      ]
+    }
+    ```
 
 ### Update Budget
 
-**PUT** `/budgets/{id}`
+Update an existing budget.
 
-**Request Body:**
-
-```json
-{
-  "amount": 150000,
-  "target": 250000,
-  "description": "Updated monthly food budget",
-  "type": "EXPENSE",
-  "endDate": "2023-12-31",
-  "category": "Food & Beverages"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Budget updated successfully",
-  "data": {
-    "id": "uuid",
-    "userId": "user-uuid",
-    "amount": 150000,
-    "target": 250000,
-    "description": "Updated monthly food budget",
-    "type": "EXPENSE",
-    "endDate": "2023-12-31T00:00:00.000Z",
-    "category": "new-category-uuid",
-    "createdAt": "2023-12-01T10:00:00.000Z",
-    "updatedAt": "2023-12-01T11:00:00.000Z",
-    "user": {...},
-    "categoryData": {...}
+- **URL**: `/api/budgets/:id`
+- **Method**: `PUT`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Request Body**:
+  ```json
+  {
+    "amount": 45000,
+    "target": 150000,
+    "description": "Updated food budget",
+    "endDate": "2024-01-31"
   }
-}
-```
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Budget updated successfully",
+      "data": {
+        "id": "budget_id",
+        "userId": "user_id",
+        "amount": 45000,
+        "target": 150000,
+        "description": "Updated food budget",
+        "type": "EXPENSE",
+        "category": "category_id",
+        "endDate": "2024-01-31T00:00:00.000Z",
+        "createdAt": "2023-06-15T14:00:00.000Z",
+        "updatedAt": "2023-06-15T16:00:00.000Z",
+        "categoryData": {
+          "id": "category_id",
+          "name": "makan",
+          "description": "Food expenses",
+          "userId": "user_id",
+          "createdAt": "2023-06-15T11:00:00.000Z",
+          "updatedAt": "2023-06-15T11:00:00.000Z"
+        }
+      }
+    }
+    ```
 
 ### Delete Budget
 
-**DELETE** `/budgets/{id}`
+Delete a budget.
 
-**Response:**
-
-```json
-{
-  "message": "Budget deleted successfully"
-}
-```
-
----
-
-## Data Models
-
-### User
-
-```typescript
-{
-  id: string; // UUID
-  username: string;
-  email: string; // Unique
-  password: string; // Hashed
-  createdAt: Date;
-  updatedAt: Date;
-}
-```
-
-### Transaction
-
-```typescript
-{
-  id: string; // UUID
-  userId: string; // Foreign key to User
-  amount: number; // Optional
-  description: string; // Optional
-  type: "DEPOSIT" | "WITHDRAWAL";
-  category: string; // Foreign key to Category (optional)
-  createdAt: Date;
-  updatedAt: Date;
-}
-```
-
-### Budget
-
-```typescript
-{
-  id: string; // UUID
-  userId: string; // Foreign key to User
-  amount: number; // Optional, current amount
-  target: number; // Optional, target amount
-  description: string; // Optional
-  type: "SAVINGS" | "EXPENSE";
-  endDate: Date; // Optional
-  category: string; // Foreign key to Category (optional)
-  createdAt: Date;
-  updatedAt: Date;
-}
-```
-
-### Category
-
-```typescript
-{
-  id: string; // UUID
-  name: string;
-  description: string; // Optional
-  createdAt: Date;
-  updatedAt: Date;
-}
-```
-
----
+- **URL**: `/api/budgets/:id`
+- **Method**: `DELETE`
+- **Authentication**: Required
+- **Headers**:
+  ```
+  Authorization: Bearer jwt_token_here
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Content**:
+    ```json
+    {
+      "message": "Budget deleted successfully"
+    }
+    ```
 
 ## Error Responses
 
-### 400 Bad Request
+All endpoints may return the following error responses:
 
-```json
-{
-  "error": "User ID and transaction type are required"
-}
-```
+- **401 Unauthorized**:
 
-### 401 Unauthorized
+  ```json
+  {
+    "message": "Not authorized, no token"
+  }
+  ```
 
-```json
-{
-  "message": "No token provided"
-}
-```
+  or
 
-### 404 Not Found
+  ```json
+  {
+    "message": "Not authorized, token failed"
+  }
+  ```
 
-```json
-{
-  "error": "Transaction not found"
-}
-```
+- **404 Not Found**:
 
-### 500 Internal Server Error
+  ```json
+  {
+    "message": "Resource not found"
+  }
+  ```
 
-```json
-{
-  "error": "Internal server error"
-}
-```
-
----
-
-## Features
-
-### Automatic Category Creation
-
-- When creating or updating transactions/budgets with a category name that doesn't exist, the system automatically creates a new category
-- Category lookup is case-insensitive to prevent duplicates
-- Auto-generated categories include a default description
-
-### Authentication & Authorization
-
-- JWT-based authentication
-- Protected routes require valid tokens
-- Token expires in 30 days
-
-### Data Relationships
-
-- Users can have multiple transactions and budgets
-- Categories can be associated with multiple transactions and budgets
-- All responses include related data for better UX
-
-### Validation
-
-- Required field validation
-- Duplicate prevention for categories
-- Proper error handling throughout
-
----
-
-## Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-DATABASE_URL="postgresql://username:password@localhost:5432/cashflow_db"
-JWT_SECRET="your-super-secret-jwt-key"
-PORT=3000
-```
-
----
-
-## Getting Started
-
-1. Install dependencies:
-
-```bash
-npm install
-```
-
-2. Set up database:
-
-```bash
-npx prisma generate
-npx prisma migrate dev
-```
-
-3. Start development server:
-
-```bash
-npm run dev
-```
-
-The API will be available at `http://localhost:3000`
+- **500 Server Error**:
+  ```json
+  {
+    "message": "Server error"
+  }
+  ```

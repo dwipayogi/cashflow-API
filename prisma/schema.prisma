@@ -18,6 +18,7 @@ model User {
 
   transactions  Transaction[]
   budgets       Budget[]
+  categories    Category[]
 }
 
 model Transaction {
@@ -52,6 +53,8 @@ model Budget {
 
 model Category {
   id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
   name          String
   description   String?
   createdAt     DateTime  @default(now()) @map("created_at")
