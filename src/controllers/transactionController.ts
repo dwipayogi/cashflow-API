@@ -88,9 +88,15 @@ export const getTransactions = async (req: Request, res: Response) => {
       },
     });
 
+    // Transform the response to include category name instead of ID
+    const transformedTransactions = transactions.map((transaction) => ({
+      ...transaction,
+      categoryName: transaction.categoryData?.name || "Uncategorized",
+    }));
+
     res.status(200).json({
       count: transactions.length,
-      data: transactions,
+      data: transformedTransactions,
     });
   } catch (error) {
     console.error("Get transactions error:", error);
@@ -381,6 +387,95 @@ export const getTransactionsByCategoryName = async (
     });
   } catch (error) {
     console.error("Get transactions by category name error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get transactions by month
+export const getTransactionsByMonth = async (req: Request, res: Response) => {
+  try {
+    const { month, year } = req.params;
+    const userId = req.user.id;
+
+    // Validate month and year
+    const monthNum = parseInt(month);
+    const yearNum = parseInt(year);
+
+    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+      return res.status(400).json({
+        message: "Invalid month. Month must be a number between 1 and 12.",
+      });
+    }
+
+    if (isNaN(yearNum) || yearNum < 1900 || yearNum > 2100) {
+      return res.status(400).json({
+        message: "Invalid year. Year must be a number between 1900 and 2100.",
+      });
+    }
+
+    // Create date range for the specified month
+    const startDate = new Date(yearNum, monthNum - 1, 1); // Months are 0-indexed in JavaScript
+    const endDate = new Date(yearNum, monthNum, 0); // Last day of the month
+    endDate.setHours(23, 59, 59, 999); // Set to end of day
+
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      include: {
+        categoryData: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    // Calculate summary statistics
+    const deposits = transactions.filter((t) => t.type === "DEPOSIT");
+    const withdrawals = transactions.filter((t) => t.type === "WITHDRAWAL");
+
+    const totalDeposits = deposits.reduce((sum, t) => sum + (t.amount || 0), 0);
+    const totalWithdrawals = withdrawals.reduce(
+      (sum, t) => sum + (t.amount || 0),
+      0
+    );
+
+    res.status(200).json({
+      count: transactions.length,
+      month: monthNum,
+      monthName: monthNames[monthNum - 1],
+      year: yearNum,
+      period: `${monthNames[monthNum - 1]} ${yearNum}`,
+      summary: {
+        totalDeposits,
+        totalWithdrawals,
+        netChange: totalDeposits - totalWithdrawals,
+        depositCount: deposits.length,
+        withdrawalCount: withdrawals.length,
+      },
+      data: transactions,
+    });
+  } catch (error) {
+    console.error("Get transactions by month error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -8,6 +8,7 @@ import {
   getTransactionsByCategory,
   getTransactionsByType,
   getTransactionsByCategoryName,
+  getTransactionsByMonth,
 } from "../controllers/transactionController.ts";
 import { protect } from "../middleware/auth.ts";
 
@@ -22,6 +23,7 @@ router.get("/", getTransactions);
 router.get("/category/:categoryId", getTransactionsByCategory);
 router.get("/category/name/:categoryName", getTransactionsByCategoryName);
 router.get("/type/:type", getTransactionsByType);
+router.get("/month/:year/:month", getTransactionsByMonth);
 router.get("/:id", getTransaction);
 router.put("/:id", updateTransaction);
 router.delete("/:id", deleteTransaction);

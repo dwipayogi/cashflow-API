@@ -5,6 +5,7 @@ import authRoutes from "./src/routes/authRoutes.ts";
 import categoryRoutes from "./src/routes/categoryRoutes.ts";
 import transactionRoutes from "./src/routes/transactionRoutes.ts";
 import budgetRoutes from "./src/routes/budgetRoutes.ts";
+import chatbotRoutes from "./src/routes/chatbotRoutes.ts";
 
 // Load environment variables
 dotenv.config();
@@ -22,7 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/transactions", transactionRoutes);
-app.use("/api/budgets", budgetRoutes); // Add this line
+app.use("/api/budgets", budgetRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 // Root route
 app.get("/", (req, res) => {
